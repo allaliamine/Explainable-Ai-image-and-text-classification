@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- style css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">    
+    
+    <!-- tailwind.css -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- font awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <title>Sentiment Analysis</title>
+    
+</head>
+<body>    
+
+    <div>
+
+        <div class="section" class="Home">
+
+            <nav class="bg-gray-300 shadow-lg">
+
+                <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+
+                    <div class="relative flex h-16 items-center justify-between">
+                    
+                        <!-- Mobile menu button-->
+                        <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                            <button id="mobile-menu-button" type="button" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-[#000000] hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                                <span class="sr-only">Open main menu</span>
+                                
+                                <!-- Icon when menu is closed -->
+                                <svg id="menu-open" class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                                </svg>
+                                
+                                <!-- Icon when menu is open -->
+                                <svg id="menu-close" class="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+
+                            </button>
+                        </div>
+                        
+                        <!-- Desktop menu -->
+                        <div class="flex flex-1 items-center justify-center">
+                            <div class="hidden sm:block">
+                                <div class="flex space-x-4">
+                                    <a href="#1" class="rounded-md px-3 py-2 text-sm font-medium text-gray-950 hover:bg-[#000000] hover:text-white">Home</a>
+                                    <a href="#about" class="rounded-md px-3 py-2 text-sm font-medium text-gray-950 hover:bg-[#000000] hover:text-white">About</a>
+                                    <a href="https://github.com/allaliamine/AI-Detector" class="rounded-md px-3 py-2 text-sm font-medium text-gray-950 hover:bg-[#000000] hover:text-white">Github Repository <i class="fab fa-github fa-xl"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <!-- Mobile menu, initially hidden -->
+                <div class="sm:hidden overflow-hidden max-h-0 opacity-0 transition-all duration-500 ease-in-out" id="mobile-menu">
+                    <div class="space-y-1 px-2 pb-3 pt-2">
+                        <a href="#1" class="block rounded-md px-3 py-2 text-base font-medium text-gray-950 hover:bg-[#000000] hover:text-white">Home</a>
+                        <a href="#about" class="block rounded-md px-3 py-2 text-base font-medium text-gray-950 hover:bg-[#000000] hover:text-white">About</a>
+                        <a href="https://github.com/allaliamine/AI-Detector" class="rounded-md px-3 py-2 text-sm font-medium text-gray-950 hover:bg-[#000000] hover:text-white">Github Repository<i class="fab fa-github fa-xl"></i></a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="Home">
+
+                <!-- Top selection buttons -->
+                <div class="flex justify-center space-x-4 mb-8">
+                    <button onclick="showSection('sentiment')" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Sentiment Analysis</button>
+                    <button onclick="showSection('brain')" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">Brain MRI Analysis</button>
+                </div>
+
+                <!-- Sentiment Analysis Form -->
+                <div id="sentimentSection" class="flex items-center justify-center w-full">
+                    <div class="flex items-start justify-center w-3/4">
+                        <div class="flex-grow flex flex-col justify-center">
+                            <form id="predictForm" method="POST" class="flex flex-col items-center">
+                                <input 
+                                    type="text"
+                                    name="text"
+                                    id="textInput"
+                                    value="{{ text }}"
+                                    class="border border-gray-400 rounded w-full p-2"
+                                    placeholder="Enter text here..." 
+                                    required
+                                />
+
+                                <div class="my-3"></div>
+
+                                <div class="flex space-x-4 mb-4">
+                                    <label class="flex items-center space-x-2">
+                                        <input type="radio" name="explainMethod" value="shap" checked onchange="updateFormAction()"> 
+                                        <span>SHAP</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2">
+                                        <input type="radio" name="explainMethod" value="lime" onchange="updateFormAction()"> 
+                                        <span>LIME</span>
+                                    </label>
+                                </div>
+
+                                <p id="errorMessage" class="hidden text-red-600 text-sm">Text must be between 1 and 50 words.</p>
+
+                                <div class="flex justify-center my-4">
+                                    <button type="submit" class="shadow-lg relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-black" onclick="return validateWordCount(event)">
+                                        <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
+                                            Predict
+                                        </span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+                <!-- Brain MRI Upload -->
+                <div id="brainSection" class="flex items-center justify-center w-full hidden">
+
+                    
+                    <form id="mriForm" method="POST" enctype="multipart/form-data"  class="flex flex-col items-center">
+
+                        <input type="file" name="image" accept="image/*" required class="border border-gray-400 rounded w-full p-2" />
+                        
+                        <div class="flex space-x-4 mb-4">
+                            <label class="flex items-center space-x-2">
+                                <input type="radio" name="image_explain_method" value="gradcam" checked onchange="updateMRIFormAction()"> 
+                                <span>Grad-CAM</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="radio" name="image_explain_method" value="lime_image" onchange="updateMRIFormAction()"> 
+                                <span>LIME</span>
+                            </label>
+                        </div>
+
+
+                        <div class="flex justify-center my-4">
+                            <button type="submit" class="shadow-lg relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-black">
+                                <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
+                                    Predict
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            
+                
+
+                <!-- Prediction output -->
+                <div class="text-lg text-gray-600 flex flex-col items-center justify-center mb-6">
+                    {% if prediction %}
+                        <h2>Predicted class: {{ prediction }}</h2>
+                        <h2>Confidence of <span class="text-green-800">{{ proba }}%</span></h2>
+                    {% else %}
+                        <h2>Type a text or upload an image to predict a class</h2>
+                    {% endif %}
+                </div>
+
+                <!-- Explanation output -->
+                <div class="container mt-10">
+                    <div class="flex flex-col items-center space-y-6">
+                        {% if method == "Grad-CAM" %}
+                            <h2 class="text-2xl font-semibold text-gray-900">Grad-CAM Visualization:</h2>
+                            <img src="{{ url_for('static', filename='gradcam_result.jpg') }}" class="mt-4 rounded shadow" width="250px" height="250px" alt="Grad-CAM Result">
+
+                        {% elif method == "LIME_image" %}
+                            <h2 class="text-2xl font-semibold text-gray-900">LIME Visualization:</h2>
+                            <img src="{{ url_for('static', filename='lime_result.jpg') }}" class="mt-4 rounded shadow" width="250px" height="250px" alt="LIME Result">
+
+                        {% else %}
+                            <h2 class="text-2xl font-semibold text-gray-900">Explanation:</h2>
+                            <div class="w-full shap-plot">
+                                {% if explanation_html %}
+                                    {{ explanation_html | safe }}
+                                {% else %}
+                                    {{ shap_html | safe }}
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+
+
+
+        <div class="section">
+            <div class="h-screen flex items-center justify-center border-0">
+                <div class="card xl:w-10/12 mx-auto about-section bg-transparent">
+
+                    <div class="border-0 bg-transparent text-center">
+                        <h1 class="text-4xl  font-bold mb-4 font-serif">About The project</h1>
+                    </div>
+                
+                    <div class="card-body pl-0 py-0 text-center">
+                        <p class="text-lg leading-relaxed font-serif ">This platform is designed to help users identify whether a given text is positive or negative as well as it shows explainability. the project combine multiple technologies.</p>
+                        <br>
+                        <h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-black font-serif">Technologies used include:</h2>
+
+                        <ul class="text-gray-500 list-disc list-inside dark:text-black font-serif">
+                            <li>HTML, CSS, Javascript and Tailwind for a responsive interface.</li>
+                            <li>Keras for deep learning algorithms.</li>
+                            <li>Flask for backend development.</li>
+                        </ul>
+
+                        <br>
+                        <h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-black ">test after</h2>
+
+                       
+                    </div>
+                
+                </div>
+                
+            </div>
+            
+        </div>
+
+    </div>
+
+
+    
+    <footer id="about" class="flex flex-col items-center bg-zinc-50 text-center text-surface dark:bg-neutral-700 dark:text-white">
+        <div class="container pt-9">
+        <!-- Social media icons container -->
+            <div class="font-serif">
+                for any feedback or question please contact us using one of the methods bellow            
+            </div>
+
+            <div class="mb-6 flex justify-center space-x-2">
+                
+                <a href="https://www.linkedin.com/in/m-amin-allali" type="button" class="rounded-full bg-transparent p-3 font-medium uppercase leading-normal text-surface transition duration-150 ease-in-out hover:bg-black focus:outline-none focus:ring-0 dark:text-white dark:hover:bg-secondary-900" data-twe-ripple-init>
+                    <span class="mx-auto [&>svg]:h-5 [&>svg]:w-5">
+                        <i class="fab fa-linkedin fa-xl"></i>
+                    </span>
+                </a>
+
+
+                <a href="https://github.com/allaliamine" type="button" class="rounded-full bg-transparent p-3 font-medium uppercase leading-normal text-surface transition duration-150 ease-in-out hover:bg-black focus:outline-none focus:ring-0 dark:text-white dark:hover:bg-secondary-900" data-twe-ripple-init>
+                    <span class="mx-auto [&>svg]:h-5 [&>svg]:w-5">
+                        <i class="fab fa-github fa-xl"></i>
+                    </span>
+                </a>
+
+                <a href="#!" type="button" class="rounded-full bg-transparent p-3 font-medium uppercase leading-normal text-surface transition duration-150 ease-in-out hover:bg-black focus:outline-none focus:ring-0 dark:text-white dark:hover:bg-secondary-900" data-twe-ripple-init>
+                    <span class="mx-auto [&>svg]:h-5 [&>svg]:w-5 ">
+                        <i class="fab fa-google fa-xl"></i>
+                    
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        <!--Copyright section-->
+        <div class="w-full bg-black/5 p-4 text-center">
+            © 2024 Copyright: Allali Mohamed Amin
+        </div>
+
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
