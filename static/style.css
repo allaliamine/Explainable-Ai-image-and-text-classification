@@ -1,0 +1,85 @@
+/* body {
+    /* background: #010101; */
+    
+.section{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.Home{
+    padding-top: 8%;
+}
+  
+.Home > h1{
+    text-align: center;
+}
+
+  
+.word {
+    display: flex;
+}
+  
+.space-between {
+    display: inline-block;
+    width: 20px; 
+}
+
+.fa-angle-up{
+    width: 50px;
+    height: 40px;
+}
+
+
+
+/* Custom style for the donut chart */
+.donut-chart {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: conic-gradient(
+        #4ade80 0% calc(var(--percentage) * 1%),
+        #e5e7eb calc(var(--percentage) * 1%) 100%
+    );
+}
+
+
+/* Creating the hole in the middle */
+.donut-chart::before {
+    content: '';
+    position: absolute;
+    top: 15%;
+    left: 15%;
+    width: 70%;
+    height: 70%;
+    background-color: white;
+    border-radius: 50%;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  margin-top: 60px;
+}
+
+.lime.top_div {
+  width: 600px;
+}
+
+.lime.text_div {
+  width: 300px;            
+  /* margin: 30px auto 0 auto; */
+  text-align: center;
+  text-decoration: underline;
+}
+
+.shap-plot svg {
+    width: 500px !important;
+    height: auto !important;
+}
+
+
+
+
+  
