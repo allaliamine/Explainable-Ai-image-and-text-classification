@@ -180,11 +180,39 @@
 
                         {% else %}
                             <h2 class="text-2xl font-semibold text-gray-900">Explanation:</h2>
-                            <div class="w-full shap-plot">
+                            
                                 {% if explanation_html %}
-                                    {{ explanation_html | safe }}
+                                    <div class="w-full">
+                                        {{ explanation_html | safe }}
+
+                                        <div class="mt-4 space-y-2">
+                                            <div class="flex items-center space-x-2">
+                                                <div class="w-4 h-4 bg-[#FF7F0E] rounded"></div>
+                                                <span class="text-sm text-gray-700">Words that influenced positively</span>
+                                            </div>
+                                            <div class="flex items-center space-x-2">
+                                                <div class="w-4 h-4 bg-[#1F77B4] rounded"></div>
+                                                <span class="text-sm text-gray-700">Words that influenced negatively</span>
+                                            </div>
+                                        </div> 
+                                    </div>
                                 {% else %}
-                                    {{ shap_html | safe }}
+                                    {% if shap_html %}
+                                        <div class="w-full shap-plot">
+                                            {{ shap_html | safe }}
+                                            <div class="mt-4 space-y-2">
+                                                <div class="flex items-center space-x-2">
+                                                    <div class="w-4 h-4 bg-[#FF0051] rounded"></div>
+                                                    <span class="text-sm text-gray-700">Words that influenced positively</span>
+                                                </div>
+                                                <div class="flex items-center space-x-2">
+                                                    <div class="w-4 h-4 bg-[#008BFB] rounded"></div>
+                                                    <span class="text-sm text-gray-700">Words that influenced negatively</span>
+                                                </div>
+                                            </div> 
+                                        </div> 
+                                    {% endif %}
+                                    
                                 {% endif %}
                             </div>
                         {% endif %}
