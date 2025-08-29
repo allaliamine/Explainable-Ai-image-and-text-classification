@@ -82,7 +82,7 @@ cd Explainable-Ai-image-and-text-classification
 - LIME (image): Scattered superpixel-based regions, less intuitive.
 - SHAP (text): Provided stable word-level importance scores.
 - LIME (text): Highlighted key words but less robust than SHAP.
-- 
+
 ## Contact
 
 For any inquiries or feedback, please contact:
